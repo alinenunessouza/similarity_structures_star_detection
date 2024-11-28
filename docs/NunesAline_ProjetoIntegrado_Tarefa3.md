@@ -43,25 +43,15 @@ Este é o núcleo do sistema, onde os dois modelos de análise de similaridade s
 #### Descrição:
 Validar os resultados dos modelos para garantir que as estrelas identificadas sejam precisas.
 
-#### O que é feito:
+#### O que será feito:
 - Comparar as coordenadas das estrelas detectadas com as posições reais (quando disponíveis).
-- Gerar métricas de desempenho como precisão e recall.
-- Avaliar a robustez dos modelos em diferentes condições de desfoque, ruído e brilho.
+- Avaliar o comportamento do modelo com base de dados homogênea e não homogênea (disparidade maior quanto a tamanho de estrelas, disparidade luminosa entre objetos, etc).
+- Gerar métricas de classificação como acurácia, precisão, recall, falsos positivos, falsos negativos, verdadeiro positivo e verdadeiro negativo.
+- Gerar métricas de regressão como RMSE (erro quadrático médio).
 
 ---
 
-### 5. **Documentação**
-#### Descrição:
-Fornecer guias claros e detalhados para o uso dos modelos, incluindo explicações técnicas e práticas.
-
-#### Funcionalidades:
-- Documentar o fluxo de trabalho de cada módulo.
-- Incluir exemplos de entrada e saída para facilitar o entendimento.
-- Manter a documentação atualizada com as melhorias implementadas.
-
----
-
-### 6. **Módulo de Configuração**
+### 5. **Módulo de Configuração**
 #### Descrição:
 Pipeline que permite ajustar os parâmetros dos modelos e das etapas de processamento.
 
@@ -86,8 +76,8 @@ Pipeline que permite ajustar os parâmetros dos modelos e das etapas de processa
 4. **Pós-Processamento:**
    - Indicação dos candidatos a estrela.
 
-4. **Validação:**
-   - Os resultados são validados e comparados com métricas de desempenho.
+5. **Validação:**
+   - Os resultados são validados e comparados com métricas de classificação e regressão.
 
 5. **Ajustes:**
    - Baseado nos resultados, o usuário pode ajustar os parâmetros no módulo de configuração.
