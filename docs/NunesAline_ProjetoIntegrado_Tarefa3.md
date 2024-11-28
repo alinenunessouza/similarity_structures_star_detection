@@ -11,43 +11,45 @@ Este projeto tem como objetivo criar **dois modelos de similaridade** para a ide
 Este módulo é responsável por preparar as imagens para análise, garantindo que elas tenham qualidade suficiente para que as estrelas possam ser identificadas.
 
 #### Funcionalidades:
-- Normalizar a intensidade das imagens.
-- Reduzir ruído utilizando filtros como o filtro gaussiano ou mediano.
-- Equalizar o histograma para melhorar o contraste das imagens.
+- Converter a imagem  para escala de preto e branco;
+- Normalizar os pixels da imagem, para intervalo entre 0 e 1;
+- Reduzir ruído utilizando um filtro de intensidade.
 
 ---
 
-### 2. **Módulo de Extração de Similaridade**
+### 2. **Módulo de Extração de características**
 #### Descrição:
-Este é o núcleo do sistema, onde os dois modelos de análise de similaridade são implementados para identificar padrões de estrelas.
+Este é o núcleo do sistema, onde os dois modelos de análise de similaridade são implementados para identificar padrões de estrelas. A base do projeto é dada pela hipótese que a distribuição de energia de uma imagem de estrela real coincide estatisticamente com uma distruibuição gaussiana na maioria dos casos.
 
 #### Modelos:
 1. **Modelo de Similaridade por cosseno:**
-   - Baseado em padrões de brilho e intensidade.
-   - Utiliza técnicas de similaridade por cosseno para encontrar regiões na imagem que correspondem a estrelas.
+   - Estabelecer uma comparação baseada na diferença entre ângulos de um vetor de espaço N. No caso, é o produto escalar da região de interesse da imagem com estrela e o kernel gaussiano gerado, dividido pelo comprimento da região da imagem e do kernel. Como a similaridade trabalha com vetor de dimensão 1xN, foi necessário transformar a imagem em um vetor unidimensional.
 
 2. **Modelo de Correlação de Pearson:**
-   - Baseado em padrões de brilho e intensidade.
-   - Utiliza técnicas de correlação para encontrar regiões na imagem que correspondem a estrelas.
+   - Abodagem através do índice de correlação de Person. A correlação é responsável por avaliar a força e a direção de uma relação linear entre a intensidade de brilho do segmento da imagem e o kernel gaussiano;
+   - Mapa de correlação: destaca objetos estelares que se assemelham em tamanho e dispersão ao kernel utilizado;
+   - Projetor Gama: de maneira a agregar diferentes kernels, a utilização de um projetor gama é definida como a função acumulativa das correlações inferidas.
 
 ---
 ### 3. **Módulo de Pós-Processamento**
+- Detecção dos picos de luminosidade a partir dos mapas de similaridade gerados;
+- Indicação de coordenadas com pontos candidados a estrela na imagem original.
 ---
 
-### 4. **Módulo de Validação**
+### 4. **Etapa de Validação**
 #### Descrição:
-Valida os resultados dos modelos para garantir que as estrelas identificadas sejam precisas.
+Validar os resultados dos modelos para garantir que as estrelas identificadas sejam precisas.
 
-#### Funcionalidades:
+#### O que é feito:
 - Comparar as coordenadas das estrelas detectadas com as posições reais (quando disponíveis).
-- Gerar métricas de desempenho como precisão, recall e F1-score.
+- Gerar métricas de desempenho como precisão e recall.
 - Avaliar a robustez dos modelos em diferentes condições de desfoque, ruído e brilho.
 
 ---
 
-### 5. **Módulo de Documentação**
+### 5. **Documentação**
 #### Descrição:
-Fornece guias claros e detalhados para o uso dos modelos, incluindo explicações técnicas e práticas.
+Fornecer guias claros e detalhados para o uso dos modelos, incluindo explicações técnicas e práticas.
 
 #### Funcionalidades:
 - Documentar o fluxo de trabalho de cada módulo.
@@ -58,7 +60,7 @@ Fornece guias claros e detalhados para o uso dos modelos, incluindo explicaçõe
 
 ### 6. **Módulo de Configuração**
 #### Descrição:
-Permite ajustar os parâmetros dos modelos e das etapas de processamento.
+Pipeline que permite ajustar os parâmetros dos modelos e das etapas de processamento.
 
 #### Funcionalidades:
 - Configurar os parâmetros dos filtros de pré-processamento (e.g., tamanho do kernel do filtro gaussiano).
@@ -79,7 +81,7 @@ Permite ajustar os parâmetros dos modelos e das etapas de processamento.
    - Os dois modelos analisam as imagens em busca de estrelas.
   
 4. **Pós-Processamento:**
-
+   - Indicação dos candidatos a estrela.
 
 4. **Validação:**
    - Os resultados são validados e comparados com métricas de desempenho.
@@ -104,6 +106,7 @@ Permite ajustar os parâmetros dos modelos e das etapas de processamento.
 
 ## Aplicações Práticas
 
-- Identificação de estrelas em telescópios amadores ou profissionais.
-- Detecção de padrões em imagens para análise científica.
+- Identificação de estrelas em telescópios amadores ou profissionais;
+- Detecção de padrões em imagens para análise científica;
+- Aplicação em equipamentos com pouco espaço de armazenamento, sem necessidade de carregar catalogos estelares.
 
