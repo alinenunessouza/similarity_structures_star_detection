@@ -2,6 +2,8 @@
 
 Este projeto tem como objetivo criar **dois modelos de similaridade** para a identificação de estrelas em imagens desfocadas. Ele foi pensado de forma modular para ser flexível, escalável e fácil de entender.
 
+![Diagrama de fluxo do projeto](https://github.com/alinenunessouza/similarity_structures_star_detection/blob/main/docs/Fluxogragrama_metodologia.png)
+
 ---
 
 ## Módulos do Projeto
@@ -24,12 +26,13 @@ Este é o núcleo do sistema, onde os dois modelos de análise de similaridade s
 #### Modelos:
 1. **Modelo de Similaridade por cosseno:**
    - Estabelecer uma comparação baseada na diferença entre ângulos de um vetor de espaço N. No caso, é o produto escalar da região de interesse da imagem com estrela e o kernel gaussiano gerado, dividido pelo comprimento da região da imagem e do kernel. Como a similaridade trabalha com vetor de dimensão 1xN, foi necessário transformar a imagem em um vetor unidimensional.
+   ![Fluxograma do modelo de similaridade por cosseno](https://github.com/alinenunessouza/similarity_structures_star_detection/blob/main/docs/TCC2_Fluxograma_SimilaridadeCos.png)
 
 2. **Modelo de Correlação de Pearson:**
    - Abodagem através do índice de correlação de Person. A correlação é responsável por avaliar a força e a direção de uma relação linear entre a intensidade de brilho do segmento da imagem e o kernel gaussiano;
    - Mapa de correlação: destaca objetos estelares que se assemelham em tamanho e dispersão ao kernel utilizado;
    - Projetor Gama: de maneira a agregar diferentes kernels, a utilização de um projetor gama é definida como a função acumulativa das correlações inferidas.
-
+   ![Fluxograma do modelo de correlação](https://github.com/alinenunessouza/similarity_structures_star_detection/blob/main/docs/TCC2_Fluxograma_ProjetorGama.png)
 ---
 ### 3. **Módulo de Pós-Processamento**
 - Detecção dos picos de luminosidade a partir dos mapas de similaridade gerados;
