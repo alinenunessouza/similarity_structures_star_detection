@@ -1,4 +1,5 @@
-# Descritivo Funcional do Projeto: Identificação de Estrelas em Imagens Desfocadas
+# Descritivo Funcional do Projeto: Identificação de Estrelas em Imagens Desfocadas (parte do trabalho de conclusão 'Análise de Estruturas de Similaridade para Identificação de
+Estrelas em Imagens Desfocadas')
 
 Este projeto tem como objetivo criar **dois modelos de similaridade** para a identificação de estrelas em imagens desfocadas. Ele foi pensado de forma modular para ser flexível, escalável e fácil de entender.
 
