@@ -5,7 +5,7 @@ import Interface as mi
 from typing import List, Callable
 from scipy.signal import correlate2d
 
-THRESHOLD_FACTOR = 0.6 #0.55 #0.45 # Fator para cálculo do limiar
+THRESHOLD_FACTOR = 0.6 # Fator para cálculo do limiar
 MASK_MAX_VALUE = 255  # Valor máximo da máscara binária
 
 class CorrelationPipeline:
