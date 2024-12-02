@@ -3,12 +3,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import Interface as mi
 from typing import List, Callable
-from scipy.signal import correlate2d
 
 THRESHOLD_FACTOR = 0.6 #0.55 #0.45 # Fator para cálculo do limiar
 MASK_MAX_VALUE = 255  # Valor máximo da máscara binária
 
-class GamaProjectorPipeline:
+class CosSimilarityPipeline:
     def __init__(self, is_debug) -> None:
         self.debug_flag = is_debug
 
@@ -24,7 +23,7 @@ class GamaProjectorPipeline:
         """
         filter_intensity = input_data.filter_intensity
         image = input_data.input_image
-        ths = filter_intensity * image.max()
+        ths = filter_intensity * image.max() # corta tudo da imagem que não tem mais do que filter_intensity% da intensidade máxima da imagem
         _, mask = cv2.threshold(image, ths, MASK_MAX_VALUE, cv2.THRESH_BINARY)
         img = cv2.bitwise_and(image, image, mask=mask.astype(np.uint8))
         filtered_image = np.where(mask > 0, img, 0)
@@ -68,18 +67,23 @@ class GamaProjectorPipeline:
         gaussian_kernel = gaussian_kernel - np.mean(gaussian_kernel)
         gaussian_kernel = gaussian_kernel / np.linalg.norm(gaussian_kernel)
 
-        if self.debug_flag:
-            plt.imshow(gaussian_kernel)
-            plt.title(f"Kernel (ks: {param.size} sigma: {param.sigma})")
-            plt.show()
+        # if self.debug_flag:
+        #     plt.imshow(gaussian_kernel)
+        #     plt.title(f"Kernel (ks: {param.size} sigma: {param.sigma})")
+        #     plt.show()
         return mi.Kernel(parameter=param, values=gaussian_kernel)
 
-    def correlation        (
+    def cosine_similarity(
         self, img_region: np.ndarray, kernel: np.ndarray
     ) -> np.ndarray:
         img_region_flat = img_region.flatten() # faz o array ficar array unidimensional (plano)
         kernel_flat = kernel.flatten()
-        return np.correlate(img_region_flat, kernel_flat)
+
+        dot_product = np.dot(img_region_flat, kernel_flat) # produto escalar
+        norm_img_region = np.linalg.norm(img_region_flat) # calcula a norma (ou comprimento) do array, "trena"
+        norm_kernel = np.linalg.norm(kernel_flat)
+
+        return max(dot_product / (norm_img_region * norm_kernel), 0) #similaridade de cos
 
     def get_similarity_map(self, input: mi.SimilarityMapInput) -> mi.SimilarityMapOutput:
         filtered_image = input.image
@@ -95,8 +99,8 @@ class GamaProjectorPipeline:
                 img_region = filtered_image[i : i + kernel_size, j : j + kernel_size] # extrai uma região da imagem do tamanho do kernel
                 if np.any(img_region != 0): # filtra para não calcular similaridade em áreas vazias
                     # if self.debug_flag:
-                    #     self.plot_map(img_region, "Região extraída da imagem no tamanho do kernel")
-                    similarity_value = self.correlation(img_region, gaussian_kernel.values)
+                    #      self.plot_map(img_region, "Região extraída da imagem no tamanho do kernel")
+                    similarity_value = self.cosine_similarity(img_region, gaussian_kernel.values)
                     
                     # Ajustar a posição para o centro da região em vez do canto superior esquerdo
                     center_i = i + half_kernel_size
@@ -187,15 +191,15 @@ class GamaProjectorPipeline:
 
         input_image = cv2.imread(input_data.img_path, 0) # carrega a imagem em escala de cinza
 
-        if self.debug_flag:
-            self.plot_map(input_image, "Imagem em escala de cinza")
-            print(input_image)
+        # if self.debug_flag:
+        #     self.plot_map(input_image, "Imagem em escala de cinza")
+        #     print(input_image)
 
         input_image = input_image / 255.0 #normalized image
 
-        if self.debug_flag:
-            self.plot_map(input_image, "Imagem normalizada")
-            print(input_image)
+        # if self.debug_flag:
+        #     self.plot_map(input_image, "Imagem normalizada")
+        #     print(input_image)
 
         img = self._filter_by_intensity(
             mi.FilterInput(
@@ -221,11 +225,10 @@ class GamaProjectorPipeline:
                 mi.SimilarityMapInput(image=filtered_image, kernel=gaussian_kernel)
             )
             if self.debug_flag:
-                self.plot_map(similarity_map.map, "Similarity_map")
+               self.plot_map(similarity_map.map, f"Mapa de similaridade (ks: {kernel_param.size} sigma: {kernel_param.sigma})")
             """similarity_map = self.get_similarity_map(
                 mi.SimilarityMapInput(image=similarity_map.map, kernel=gaussian_kernel)
             )"""
-            # self.plot_map(similarity_map.map, f"Kernel (ks: {similarity_map.params.size} sigma: {similarity_map.params.sigma})")
             similarity_maps.append(similarity_map)
 
         aggregated_map = self.map_aggregation(similarity_maps, input_data.agg_type)
