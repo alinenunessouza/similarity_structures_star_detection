@@ -213,11 +213,6 @@ class CosSimilarityPipeline:
         if self.debug_flag:
             self.plot_map(filtered_image, "Filtered image")
 
-        #pad_width = 35  # 1 pixel de padding em todas as direções, for kernel_param -> maior kernel size
-
-        # Adicionando padding
-        #filtered_image = np.pad(filtered_image, pad_width, mode='constant', constant_values=0)
-
         similarity_maps = []
         for kernel_param in input_data.kernel_param:
             gaussian_kernel = self._generate_kernel(kernel_param)
@@ -226,9 +221,7 @@ class CosSimilarityPipeline:
             )
             if self.debug_flag:
                self.plot_map(similarity_map.map, f"Mapa de similaridade (ks: {kernel_param.size} sigma: {kernel_param.sigma})")
-            """similarity_map = self.get_similarity_map(
-                mi.SimilarityMapInput(image=similarity_map.map, kernel=gaussian_kernel)
-            )"""
+
             similarity_maps.append(similarity_map)
 
         aggregated_map = self.map_aggregation(similarity_maps, input_data.agg_type)
